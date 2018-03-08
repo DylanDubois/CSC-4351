@@ -31,14 +31,14 @@ public class Print {
   }
 
   public void prEntry(Entry entry, int d) {
-    if (entry instanceof FunEntry)
-      prEntry((FunEntry)entry, d);
+    if (entry instanceof CoolEntry)
+      prEntry((CoolEntry)entry, d);
     else if (entry instanceof VarEntry)
       prEntry((VarEntry)entry, d);
     else throw new Error("Semant.prEntry");
   }
 
-  void prEntry(FunEntry entry, int d) {
+  void prEntry(CoolEntry entry, int d) {
     say(":"); types.prType(entry.formals, d+1); sayln("");
     indent(d+1); say("->"); types.prType(entry.result, d+3);
   }
