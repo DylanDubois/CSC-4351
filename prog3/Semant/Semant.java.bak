@@ -108,12 +108,12 @@ public class Semant {
         list.add(now.name);
         Type result = (now.result == null) ? VOID : transTy(now.result)
             .actual();
-        env.venv.put(now.name, new FunEntry(
+        env.venv.put(now.name, new CoolEntry(
             (Types.RECORD) transTypeFields(now.params), result));
       }
     }
     for (Absyn.FunctionDec now = d; now != null; now = now.next) {
-      FunEntry f = (FunEntry) env.venv.get(now.name);
+      CoolEntry f = (CoolEntry) env.venv.get(now.name);
       env.venv.beginScope();
 
       int LOOPTEMP = loop;
@@ -444,12 +444,12 @@ public class Semant {
 
   ExpTy transExp(Absyn.CallExp e) {
     Entry func = (Entry) env.venv.get(e.func);
-    if (func == null || !(func instanceof FunEntry)) {
+    if (func == null || !(func instanceof CoolEntry)) {
       Error(e.pos, "Undeclared function: " + e.func);
       return new ExpTy(null, VOID);
     }
     Absyn.ExpList eArgument = e.args;
-    Types.RECORD eFormals = ((FunEntry) func).formals;
+    Types.RECORD eFormals = ((CoolEntry) func).formals;
     ExpTy tmp = null;
 
     for (; eArgument != null; eArgument = eArgument.tail, eFormals = eFormals.tail) {
@@ -465,7 +465,7 @@ public class Semant {
     if (eFormals != null)
       Error(e.pos, "Function " + e.func.toString()
           + "'s arguments are lesser then expected");
-    return new ExpTy(null, ((FunEntry) func).result.actual());
+    return new ExpTy(null, ((CoolEntry) func).result.actual());
 
   }
 
