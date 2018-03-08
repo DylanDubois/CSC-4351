@@ -199,9 +199,9 @@ public class Semant
   ExpTy transExp(CallExp e)
   {
     Entry x = (Entry)this.env.venv.get(e.func);
-    if ((x instanceof FunEntry))
+    if ((x instanceof CoolEntry))
     {
-      FunEntry f = (FunEntry)x;
+      CoolEntry f = (CoolEntry)x;
       transArgs(e.pos, f.formals, e.args);
       return new ExpTy(null, f.result);
     }
@@ -492,7 +492,7 @@ public class Semant
       }
       RECORD fields = transTypeFields(new Hashtable(), f.params);
       Type type = transTy(f.result);
-      f.entry = new FunEntry(fields, type);
+      f.entry = new CoolEntry(fields, type);
       this.env.venv.put(f.name, f.entry);
     }
     for (FunctionDec f = d; f != null; f = f.next)
