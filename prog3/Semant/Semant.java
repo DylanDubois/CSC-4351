@@ -9,7 +9,6 @@ import java.util.Hashtable;
 public class Semant
 {
   Env env;
-  
   public Semant(ErrorMsg err)
   {
     this(new Env(err));
