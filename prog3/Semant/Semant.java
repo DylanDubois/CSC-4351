@@ -363,24 +363,24 @@ public class Semant
     return null;
   }
   
-  Exp transDec(TypeDec d) {
+  Exp transDec(Absyn.TypeDec d) {
     Hashtable hash = new Hashtable();
     for (Absyn.TypeDec type = d; type != null; type = type.next)
     {
       if (hash.put(type.name, type.name) != null) {
         error(type.pos, "Type redeclared");
       }
-      type.entry = new NAME(type.name);
+      type.entry = new Types.NAME(type.name);
       env.tenv.put(type.name, type.entry);
     }
     for (Absyn.TypeDec type = d; type != null; type = type.next)
     {
-      NAME name = type.entry;
+      Types.NAME name = type.entry;
       name.bind(transTy(type.ty));
     }
     for (TypeDec type = d; type != null; type = type.next)
     {
-      NAME name = type.entry;
+      Types.NAME name = type.entry;
       if (name.isLoop()) {
         error(type.pos, "Illegal type cycle");
       }
@@ -395,7 +395,7 @@ public class Semant
       if (hash.put(f.name, f.name) != null) {
         error(f.pos, "Function redeclared");
       }
-      RECORD fields = transTypeFields(new Hashtable(), f.params);
+      Types.RECORD fields = transTypeFields(new Hashtable(), f.params);
       Type type = transTy(f.result);
       f.entry = new FunEntry(fields, type);
       this.env.venv.put(f.name, f.entry);
@@ -415,22 +415,22 @@ public class Semant
     return null;
   }
   
-  private RECORD transTypeFields(Hashtable hash, Absyn.FieldList f)
+  private Types.RECORD transTypeFields(Hashtable hash, Absyn.FieldList f)
   {
     if (f == null) {
       return null;
     }
-    NAME name = (NAME)env.tenv.get(f.typ);
+    Types.NAME name = (Types.NAME)env.tenv.get(f.typ);
     if (name == null) {
       error(f.pos, "Undeclared type: " + f.typ);
     }
     if (hash.put(f.name, f.name) != null) {
       error(f.pos, "Function redeclared" + f.name);
     }
-    return new RECORD(f.name, name, transTypeFields(hash, f.tail));
+    return new Types.RECORD(f.name, name, transTypeFields(hash, f.tail));
   }
   
-  private void putTypeFields(RECORD f)
+  private void putTypeFields(Types.RECORD f)
   {
     if (f == null) {
       return;
@@ -459,7 +459,7 @@ public class Semant
     if (t == null) {
       return VOID;
     }
-    NAME name = (NAME)env.tenv.get(t.name);
+    Types.NAME name = (Types.NAME)env.tenv.get(t.name);
     if (name != null) {
       return name;
     }
@@ -469,7 +469,7 @@ public class Semant
   
   Type transTy(Absyn.RecordTy t)
   {
-    RECORD type = transTypeFields(new Hashtable(), t.fields);
+    Types.RECORD type = transTypeFields(new Hashtable(), t.fields);
     if (type != null) {
       return type;
     }
@@ -478,7 +478,7 @@ public class Semant
   
   Type transTy(Absyn.ArrayTy t)
   {
-    NAME name = (NAME)env.tenv.get(t.typ);
+    Types.NAME name = (Types.NAME)env.tenv.get(t.typ);
     if (name != null) {
       return new ARRAY(name);
     }
@@ -520,9 +520,9 @@ ExpTy transVar(Absyn.FieldVar v){
 				  return new ExpTy(null, field.fieldType);
 		  ++count;
 		  }
-		  error(v.pos, "undeclared field: " + v.field);
+		  error(v.pos, "Undeclared field: " + v.field);
 	  } else
-		  error(v.var.pos, "record required");
+		  error(v.var.pos, "Record required");
 	  return new ExpTy(null, VOID);
   }
   
@@ -535,19 +535,19 @@ ExpTy transVar(Absyn.SubscriptVar v){
 		  Types.ARRAY array = (Types.ARRAY)actual;
 		  return new ExpTy(null, array.element);
 	  }
-	  error(v.var.pos, "array required");
+	  error(v.var.pos, "Array required");
 	  return new ExpTy(null, VOID);
   }
 
 //TransTypeFields
-private RECORD transTypeFields(Hashtable hash, Absyn.FieldList f){
+private Types.RECORD transTypeFields(Hashtable hash, Absyn.FieldList f){
 	  if (f == null)
 		  return null;
-	  NAME name = (NAME)env.tenv.get(f.typ);
+	  Types.NAME name = (Types.NAME)env.tenv.get(f.typ);
 	  if (name == null)
 		  error(f.pos, "Undeclared type: " + f.typ);
 	  if(hash.put(f.name, f.name) != null)
-		  error(f.pos, "function redeclared" + f.name);
+		  error(f.pos, "Function redeclared" + f.name);
 	  return new Types.RECORD(f.name, name, transTypeFields(hash, f.tail));
   }
  
@@ -558,13 +558,13 @@ private RECORD transTypeFields(Hashtable hash, Absyn.FieldList f){
 	        error(exp.pos, "Too many expressions");
 	    }
 	    if (exp == null) {
-	      error(epos, "missing expression for " + f.fieldName);
+	      error(epos, "Missing expression for " + f.fieldName);
 	    }
 	    ExpTy e = transExp(exp.init);
 	    if (exp.name != f.fieldName)
-	      error(exp.pos, "field name mismatch");
+	      error(exp.pos, "Field name mismatch");
 	    if (!e.ty.coerceTo(f.fieldType))
-	      error(exp.pos, "field type mismatch");
+	      error(exp.pos, "Field type mismatch");
    }
 }
 
@@ -574,7 +574,6 @@ class LoopSemant extends Semant {
   {
     super(e);
   }
-  
   ExpTy transExp(BreakExp e)
   {
     return new ExpTy(null, Semant.VOID);
