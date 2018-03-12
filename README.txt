@@ -1,2 +1,2 @@
-CSC 4351
+CSC 4351 - Spring 2018
 Gerald Baumgartner
