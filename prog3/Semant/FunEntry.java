@@ -1,6 +1,6 @@
 package Semant;
 
-public class CoolEntry extends Entry {
+public class FunEntry extends Entry {
   public Types.RECORD formals;
   public Types.Type result;
   CoolEntry(Types.RECORD f, Types.Type r) {
