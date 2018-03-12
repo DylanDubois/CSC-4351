@@ -9,7 +9,5 @@ class ExpTy {
   ExpTy(Exp e, Type t) {
     exp = e;
     ty = t;
-    //System.out.println(exp);
-    //System.out.println(ty);
   }
 }
