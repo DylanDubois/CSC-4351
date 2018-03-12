@@ -1,4 +1,5 @@
-CSC 4251 - Gerald Baumgartner
-Prog3
+CSC 4351 - Gerald Baumgartner
+Prog3: Semantic Analysis
+
 Morgan Root
-Chris Ross
+Christopher Ross
