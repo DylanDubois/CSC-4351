@@ -346,7 +346,7 @@ public class Semant
 
   
   //TransDec
-  Exp transDec(Abysn.Dec d) {
+  Exp transDec(Absyn.Dec d) {
     if (d instanceof Absyn.VarDec) {
       return transDec((Absyn.VarDec)d);
     }
