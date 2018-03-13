@@ -1,15 +1,16 @@
 package Semant;
 
-import Absyn.*;
-import ErrorMsg.ErrorMsg;
+import Absyn.ExpList;
+import Absyn.SeqExp;
+import Translate.Exp;
 import Symbol.Table;
-import Types.*;
+import Types.Type;
 import java.util.Hashtable;
 
 public class Semant
 {
   Env env;
-  public Semant(ErrorMsg err)
+  public Semant(ErrorMsg.ErrorMsg err)
   {
     this(new Env(err));
   }
@@ -26,7 +27,22 @@ public class Semant
   
   private void error(int pos, String msg)
   {
-    this.env.errorMsg.error(pos, msg);
+    env.errorMsg.error(pos, msg);
+  }
+	
+  private void transArgs(int epos, Types.RECORD formal, Absyn.ExpList args)
+  {
+    if (formal == null) {
+      if (args != null){
+	error(args.head.pos, "too many arguments");}
+    }
+    if (args == null) {
+      error(epos, "missing argument for " + formal.fieldName);
+    }
+    ExpTy e = transExp(args.head);
+    if (!e.ty.coerceTo(formal.fieldType))
+      error(args.head.pos, "argument type mismatch");
+    	//return new ExpList(e.exp, transArgs(epos, formal.tail, args.tail));
   }
   
   static final VOID VOID = new VOID();
@@ -561,10 +577,12 @@ private Types.RECORD transTypeFields(Hashtable hash, Absyn.FieldList f){
 	      error(epos, "Missing expression for " + f.fieldName);
 	    }
 	    ExpTy e = transExp(exp.init);
-	    if (exp.name != f.fieldName)
+	    if (exp.name != f.fieldName) {
 	      error(exp.pos, "Field name mismatch");
-	    if (!e.ty.coerceTo(f.fieldType))
+	    }
+	    if (!e.ty.coerceTo(f.fieldType)) {
 	      error(exp.pos, "Field type mismatch");
+	    }
    }
 }
 
