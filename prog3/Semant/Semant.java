@@ -45,10 +45,10 @@ public class Semant
     	//return new ExpList(e.exp, transArgs(epos, formal.tail, args.tail));
   }
   
-  static final VOID VOID = new VOID();
-  static final INT INT = new INT();
-  static final STRING STRING = new STRING();
-  static final NIL NIL = new NIL();
+  static final Types.VOID VOID = new VOID();
+  static final Types.INT INT = new INT();
+  static final Types.STRING STRING = new STRING();
+  static final Types.NIL NIL = new NIL();
   
   private Exp checkInt(ExpTy et, int pos)
   {
@@ -346,7 +346,7 @@ public class Semant
 
   
   //TransDec
-  Exp transDec(Dec d) {
+  Exp transDec(Abysn.Dec d) {
     if (d instanceof Absyn.VarDec) {
       return transDec((Absyn.VarDec)d);
     }
@@ -456,7 +456,7 @@ public class Semant
   }
   
   //TransTy
-  Type transTy(Ty t)
+  Type transTy(Absyn.Ty t)
   {
     if (t instanceof NameTy) {
       return transTy((Absyn.NameTy)t);
