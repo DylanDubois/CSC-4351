@@ -11,5 +11,5 @@ public class FunctionDec extends Dec {
     pos=p; name=n; params=a; result=r; body=b; next=x;
   }
   public boolean leaf = false;
-  public Semant.CoolEntry entry;
+  public Semant.FunEntry entry;
 }
