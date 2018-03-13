@@ -45,10 +45,10 @@ public class Semant
     	//return new ExpList(e.exp, transArgs(epos, formal.tail, args.tail));
   }
   
-  static final Types.VOID VOID = new VOID();
-  static final Types.INT INT = new INT();
-  static final Types.STRING STRING = new STRING();
-  static final Types.NIL NIL = new NIL();
+  static final Types.VOID VOID = new Types.VOID();
+  static final Types.INT INT = new Types.INT();
+  static final Types.STRING STRING = new Types.STRING();
+  static final Types.NIL NIL = new Types.NIL();
   
   private Exp checkInt(ExpTy et, int pos)
   {
@@ -74,8 +74,8 @@ public class Semant
   private Exp checkOrderable(ExpTy et, int pos)
   {
     Type a = et.ty.actual();
-    if (!(a instanceof INT 
-        || a instanceof STRING)) {
+    if (!(a instanceof Types.INT 
+        || a instanceof Types.STRING)) {
       error(pos, "Integer or String required.");
     }
     return et.exp;
