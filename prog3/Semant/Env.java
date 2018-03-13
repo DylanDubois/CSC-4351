@@ -22,8 +22,8 @@ class Env {
     return new RECORD(n, t, null);
   }
 
-  private static FunEntry CoolEntry(RECORD f, Type r) {
-    return new CoolEntry(f, r);
+  private static FunEntry FunEntry(RECORD f, Type r) {
+    return new FunEntry(f, r);
   }
 
   Env(ErrorMsg.ErrorMsg err) {
