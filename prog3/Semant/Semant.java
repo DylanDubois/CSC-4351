@@ -496,7 +496,7 @@ public class Semant
   {
     Types.NAME name = (Types.NAME)env.tenv.get(t.typ);
     if (name != null) {
-      return new ARRAY(name);
+      return new Types.ARRAY(name);
     }
     error(t.pos, "Undeclared type: " + t.typ);
     return VOID;
