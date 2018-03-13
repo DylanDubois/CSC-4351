@@ -360,19 +360,16 @@ public class Semant
   }
   
   Exp transDec(Absyn.VarDec d) {
-    ExpTy i = transExp(d.i);
+    ExpTy init = transExp(d.init);
     Type type;
-    if (d.typ == null)
-    {
-      if (i.ty.coerceTo(NIL)) {
-        error(d.pos, "Record type required");
-      }
-      type = i.ty;
+    if (d.typ == null) {
+    	if (init.ty.coerceTo(NIL))
+    		error(d.pos, "Record type Missing");
+      type = init.ty;
     } else {
       type = transTy(d.typ);
-      if (!i.ty.coerceTo(type)) {
-        error(d.pos, "Assignment type mismatch");
-      }
+      if(!init.ty.coerceTo(type))
+    	  error(d.pos, "Assignment type incompatible");
     }
     d.entry = new VarEntry(type);
     env.venv.put(d.name, d.entry);
