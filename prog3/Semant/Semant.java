@@ -61,12 +61,12 @@ public class Semant
   private Exp checkComparable(ExpTy et, int pos)
   {
     Type a = et.ty.actual();
-    if (!(a instanceof INT
-        || a instanceof STRING 
-        || a instanceof NIL
-        || a instanceof RECORD
-        || a instanceof ARRAY)) {
-      error(pos, "integer, string, nil, record or array required");
+    if (!(a instanceof Types.INT
+        || a instanceof Types.STRING 
+        || a instanceof Types.NIL
+        || a instanceof Types.RECORD
+        || a instanceof Types.ARRAY)) {
+      error(pos, "Integer, string, nil, record or array required");
     }
     return et.exp;
   }
@@ -89,36 +89,36 @@ public class Semant
 
     if (e == null)
       return new ExpTy(null, VOID);
-    else if (e instanceof OpExp)
-      result = transExp((OpExp)e);
-    else if (e instanceof LetExp)
-      result = transExp((LetExp)e);
-    else if (e instanceof VarExp)
-      result = transExp((VarExp)e);
-    else if (e instanceof NilExp)
-      result = transExp((NilExp)e);
-    else if (e instanceof IntExp)
-      result = transExp((IntExp)e);
-    else if (e instanceof StringExp)
-      result = transExp((StringExp)e);
-    else if (e instanceof CallExp)
-      result = transExp((CallExp)e);
-    else if (e instanceof RecordExp)
-      result = transExp((RecordExp)e);
-    else if (e instanceof SeqExp)
-      result = transExp((SeqExp)e);
-    else if (e instanceof AssignExp)
-      result = transExp((AssignExp)e);
-    else if (e instanceof IfExp)
-      result = transExp((IfExp)e);
-    else if (e instanceof WhileExp)
-      result = transExp((WhileExp)e);
-    else if (e instanceof ForExp)
-      result = transExp((ForExp)e);
-    else if (e instanceof BreakExp)
-      result = transExp((BreakExp)e);
-    else if (e instanceof ArrayExp)
-      result = transExp((ArrayExp)e);
+    else if (e instanceof Absyn.OpExp)
+      result = transExp((Absyn.OpExp)e);
+    else if (e instanceof Absyn.LetExp)
+      result = transExp((Absyn.LetExp)e);
+    else if (e instanceof Absyn.VarExp)
+      result = transExp((Absyn.VarExp)e);
+    else if (e instanceof Absyn.NilExp)
+      result = transExp((Absyn.NilExp)e);
+    else if (e instanceof Absyn.IntExp)
+      result = transExp((Absyn.IntExp)e);
+    else if (e instanceof Absyn.StringExp)
+      result = transExp((Absyn.StringExp)e);
+    else if (e instanceof Absyn.CallExp)
+      result = transExp((Absyn.CallExp)e);
+    else if (e instanceof Absyn.RecordExp)
+      result = transExp((Absyn.RecordExp)e);
+    else if (e instanceof Absyn.SeqExp)
+      result = transExp((Absyn.SeqExp)e);
+    else if (e instanceof Absyn.AssignExp)
+      result = transExp((Absyn.AssignExp)e);
+    else if (e instanceof Absyn.IfExp)
+      result = transExp((Absyn.IfExp)e);
+    else if (e instanceof Absyn.WhileExp)
+      result = transExp((Absyn.WhileExp)e);
+    else if (e instanceof Absyn.ForExp)
+      result = transExp((Absyn.ForExp)e);
+    else if (e instanceof Absyn.BreakExp)
+      result = transExp((Absyn.BreakExp)e);
+    else if (e instanceof Absyn.ArrayExp)
+      result = transExp((Absyn.ArrayExp)e);
     else throw new Error("Semant.transExp");
     e.type = result.ty;
     return result;
@@ -394,7 +394,7 @@ public class Semant
       Types.NAME name = type.entry;
       name.bind(transTy(type.ty));
     }
-    for (TypeDec type = d; type != null; type = type.next)
+    for (Absyn.TypeDec type = d; type != null; type = type.next)
     {
       Types.NAME name = type.entry;
       if (name.isLoop()) {
@@ -458,13 +458,13 @@ public class Semant
   //TransTy
   Type transTy(Absyn.Ty t)
   {
-    if (t instanceof NameTy) {
+    if (t instanceof Absyn.NameTy) {
       return transTy((Absyn.NameTy)t);
     }
-    if (t instanceof RecordTy) {
+    if (t instanceof Absyn.RecordTy) {
       return transTy((Absyn.RecordTy)t);
     }
-    if (t instanceof ArrayTy) {
+    if (t instanceof Absyn.ArrayTy) {
       return transTy((Absyn.ArrayTy)t);
     }
     throw new Error("Semant.transTy");
