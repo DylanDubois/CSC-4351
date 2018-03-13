@@ -38,7 +38,7 @@ public class Print {
     else throw new Error("Semant.prEntry");
   }
 
-  void prEntry(CoolEntry entry, int d) {
+  void prEntry(FunEntry entry, int d) {
     say(":"); types.prType(entry.formals, d+1); sayln("");
     indent(d+1); say("->"); types.prType(entry.result, d+3);
   }
