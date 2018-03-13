@@ -40,20 +40,20 @@ class Env {
     STRING.bind(Semant.STRING);
     tenv.put(sym("string"), STRING);
 
-    venv.put(sym("print"),     CoolEntry(RECORD(sym("s"), STRING), VOID));
-    venv.put(sym("flush"),     CoolEntry(null, VOID));
-    venv.put(sym("getchar"),   CoolEntry(null, STRING));
-    venv.put(sym("ord"),       CoolEntry(RECORD(sym("s"), STRING), INT));
-    venv.put(sym("chr"),       CoolEntry(RECORD(sym("i"), INT), STRING));
-    venv.put(sym("size"),      CoolEntry(RECORD(sym("s"), STRING), INT));
-    venv.put(sym("substring"), CoolEntry(RECORD(sym("s"), STRING,
+    venv.put(sym("print"),     FunEntry(RECORD(sym("s"), STRING), VOID));
+    venv.put(sym("flush"),     FunEntry(null, VOID));
+    venv.put(sym("getchar"),   FunEntry(null, STRING));
+    venv.put(sym("ord"),       FunEntry(RECORD(sym("s"), STRING), INT));
+    venv.put(sym("chr"),       FunEntry(RECORD(sym("i"), INT), STRING));
+    venv.put(sym("size"),      FunEntry(RECORD(sym("s"), STRING), INT));
+    venv.put(sym("substring"), FunEntry(RECORD(sym("s"), STRING,
 					       RECORD(sym("first"), INT,
 						      RECORD(sym("n"), INT))),
 					STRING));
-    venv.put(sym("concat"),    CoolEntry(RECORD(sym("s1"), STRING,
+    venv.put(sym("concat"),    FunEntry(RECORD(sym("s1"), STRING,
 					       RECORD(sym("s2"), STRING)),
 					STRING));
-    venv.put(sym("not"),       CoolEntry(RECORD(sym("i"), INT), INT));
-    venv.put(sym("exit"),      CoolEntry(RECORD(sym("i"), INT), VOID));
+    venv.put(sym("not"),       FunEntry(RECORD(sym("i"), INT), INT));
+    venv.put(sym("exit"),      FunEntry(RECORD(sym("i"), INT), VOID));
   }
 }
