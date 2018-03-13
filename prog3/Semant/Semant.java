@@ -592,16 +592,4 @@ class LoopSemant extends Semant {
   {
     super(e);
   }
-  ExpTy transExp(BreakExp e)
-  {
-    return new ExpTy(null, Semant.VOID);
-  }
-}
-  
-class LoopVarEntry extends VarEntry
-{
-  LoopVarEntry(Type t)
-  {
-    super(t);
-  }
 }
