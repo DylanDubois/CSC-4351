@@ -20,7 +20,7 @@ public class Semant
     this.env = e;
   }
   
-  public void transProg(Exp exp)
+  public void transProg(Absyn.Exp exp)
   {
     transExp(exp);
   }
