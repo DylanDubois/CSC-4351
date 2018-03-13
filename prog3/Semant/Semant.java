@@ -431,21 +431,6 @@ public class Semant
     return null;
   }
   
-  private Types.RECORD transTypeFields(Hashtable hash, Absyn.FieldList f)
-  {
-    if (f == null) {
-      return null;
-    }
-    Types.NAME name = (Types.NAME)env.tenv.get(f.typ);
-    if (name == null) {
-      error(f.pos, "Undeclared type: " + f.typ);
-    }
-    if (hash.put(f.name, f.name) != null) {
-      error(f.pos, "Function redeclared" + f.name);
-    }
-    return new Types.RECORD(f.name, name, transTypeFields(hash, f.tail));
-  }
-  
   private void putTypeFields(Types.RECORD f)
   {
     if (f == null) {
