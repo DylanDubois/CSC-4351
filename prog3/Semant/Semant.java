@@ -485,7 +485,7 @@ public class Semant
     error(t.pos, "Undeclared type: " + t.typ);
     return VOID;
   }
-}
+
 
 //TransVar
 ExpTy transVar(Absyn.SimpleVar e) {
