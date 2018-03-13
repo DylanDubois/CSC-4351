@@ -22,7 +22,7 @@ class Env {
     return new RECORD(n, t, null);
   }
 
-  private static CoolEntry CoolEntry(RECORD f, Type r) {
+  private static FunEntry CoolEntry(RECORD f, Type r) {
     return new CoolEntry(f, r);
   }
 
