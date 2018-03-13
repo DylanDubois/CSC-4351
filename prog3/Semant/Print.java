@@ -31,8 +31,8 @@ public class Print {
   }
 
   public void prEntry(Entry entry, int d) {
-    if (entry instanceof CoolEntry)
-      prEntry((CoolEntry)entry, d);
+    if (entry instanceof FunEntry)
+      prEntry((FunEntry)entry, d);
     else if (entry instanceof VarEntry)
       prEntry((VarEntry)entry, d);
     else throw new Error("Semant.prEntry");
