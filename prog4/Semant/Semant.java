@@ -369,6 +369,7 @@ public class Semant {
       if (!init.ty.coerceTo(type))
 	error(d.pos, "assignment type mismatch");
     }
+    Translate.Access access = level.allocLocal(d.escape);
     d.entry = new VarEntry(type);
     env.venv.put(d.name, d.entry);
     return null;
