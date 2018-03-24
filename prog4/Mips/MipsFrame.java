@@ -10,6 +10,8 @@ import Frame.AccessList;
 public class MipsFrame extends Frame {
 
   private int count = 0;
+  private int offset = 0;
+  
   public Frame newFrame(Symbol name, Util.BoolList formals) {
     Label label;
     if (name == null)
@@ -24,10 +26,31 @@ public class MipsFrame extends Frame {
   public MipsFrame() {}
   private MipsFrame(Label n, Util.BoolList f) {
     name = n;
+    formals = allocFormals(0, f);
   }
 
   private static final int wordSize = 4;
   public int wordSize() { return wordSize; }
-
-  public Access allocLocal(boolean escape) { return null; }
+  
+//allocLocal
+  public Access allocLocal(boolean escape) { 
+  	if (escape){
+  		offset -= wordSize;
+  		return new InFrame(offset);
+  		}
+  	else{
+  		return new InReg(new Temp()); 
+    }
+  }
+  //allocFormals
+  public AccessList allocFormals(int offset, Util.BoolList formals){
+	  if (formals == null)
+		  return null;
+	  Access a;
+	  if (formals.head)
+		  a = new InFrame(offset);
+	  else 
+		  a = new InReg(new Temp());
+	  return new AccessList(a, allocFormals(offset + wordSize, formals.tail));
+  }
 }
