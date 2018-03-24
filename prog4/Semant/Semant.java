@@ -3,6 +3,10 @@ import Translate.Exp;
 import Types.Type;
 import java.util.Hashtable;
 import Translate.Level;
+import Translate.Access;
+import Translate.AccessList;
+import Absyn.ExpList;
+import Symbol.Symbol;
 
 public class Semant {
   Env env;
@@ -16,6 +20,8 @@ public class Semant {
   }
 
   public void transProg(Absyn.Exp exp) {
+    new FindEscape.FindEscape(exp);
+    level = new Level(level, Symbol.symbol("tigermain"), null);
     transExp(exp);
   }
 
@@ -301,7 +307,8 @@ public class Semant {
     ExpTy hi = transExp(e.hi);
     checkInt(hi, e.hi.pos);
     env.venv.beginScope();
-    e.var.entry = new LoopVarEntry(INT);
+    Translate.Access access = level.allocLocal(e.var.escape);  
+    e.var.entry = new LoopVarEntry(access,INT);
     env.venv.put(e.var.name, e.var.entry);
     Semant loop = new LoopSemant(env, level);
     ExpTy body = loop.transExp(e.body);
@@ -370,7 +377,7 @@ public class Semant {
 	error(d.pos, "assignment type mismatch");
     }
     Translate.Access access = level.allocLocal(d.escape);
-    d.entry = new VarEntry(type);
+    d.entry = new VarEntry(access, type);
     env.venv.put(d.name, d.entry);
     return null;
   }
@@ -438,11 +445,11 @@ public class Semant {
     return new Types.RECORD(f.name, name, transTypeFields(hash, f.tail));
   }
 
-  private void putTypeFields (Types.RECORD f) {
+  private void putTypeFields (Types.RECORD f, Translate.AccessList a) {
     if (f == null)
       return;
-    env.venv.put(f.fieldName, new VarEntry(f.fieldType));
-    putTypeFields(f.tail);
+    env.venv.put(f.fieldName, new VarEntry(a.head, f.fieldType));
+    putTypeFields(f.tail, a.tail);
   }
 
   Type transTy(Absyn.Ty t) {
