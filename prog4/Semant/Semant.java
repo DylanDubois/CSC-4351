@@ -448,7 +448,7 @@ public class Semant {
   private void putTypeFields (Types.RECORD f, Translate.AccessList a) {
     if (f == null)
       return;
-    env.venv.put(f.fieldName, new VarEntry(a.head, f.fieldType));
+    env.venv.put(f.fieldName, new VarEntry(f.fieldType, a.head));
     putTypeFields(f.tail, a.tail);
   }
 
