@@ -308,7 +308,7 @@ public class Semant {
     checkInt(hi, e.hi.pos);
     env.venv.beginScope();
     Translate.Access access = level.allocLocal(e.var.escape);  
-    e.var.entry = new LoopVarEntry(access,INT);
+    e.var.entry = new LoopVarEntry(INT,access);
     env.venv.put(e.var.name, e.var.entry);
     Semant loop = new LoopSemant(env, level);
     ExpTy body = loop.transExp(e.body);
