@@ -148,7 +148,7 @@ public class FindEscape {
     for (Absyn.FunctionDec fd = d; fd != null; fd = fd.next) {
       escEnv.beginScope();
       parentFun = fd;
-      for (Absyn.FieldList param = dec.params; param != null; param = param.tail)
+      for (Absyn.FieldList param = fd.params; param != null; param = param.tail)
         escEnv.put(param.name, new FormalEscape(depth + 1, param));
       traverseExp(depth + 1, fd.body);
       escEnv.endScope();
