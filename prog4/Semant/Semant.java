@@ -424,7 +424,7 @@ public class Semant {
     // 2nd pass - handles the function bodies
     for (Absyn.FunctionDec f = d; f != null; f = f.next) {
       env.venv.beginScope();
-      putTypeFields(f.entry.formals);
+      putTypeFields(f.entry.formals, f.entry.level.formals);
       Semant fun = new Semant(env, f.entry.level);
       ExpTy body = fun.transExp(f.body);
       if (!body.ty.coerceTo(f.entry.result))
