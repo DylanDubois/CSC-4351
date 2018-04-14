@@ -92,23 +92,35 @@ public class Translate {
   }
 
   public Exp SimpleVar(Access access, Level level) {
-    return Error();
+    Tree.Exp framepointer = TEMP(level.frame.FP());
+    for (Level lev = level; lev != access.home; lev = lev.parent) {
+        framepointer = lev.frame.formals.head.exp(framepointer);
+    }
+    return new Ex(access.acc.exp(framepointer));
   }
 
   public Exp FieldVar(Exp record, int index) {
-    return Error();
+    index = index * frame.wordSize();
+    Temp t = new Temp();
+    Tree.Stm aStm = MOVE(TEMP(t), record.unEx());
+    Tree.Exp aExp = MEM(BINOP(Tree.BINOP.PLUS, TEMP(t), CONST(index)));
+    return new Ex(ESEQ(aStm, aExp))
   }
 
   public Exp SubscriptVar(Exp array, Exp index) {
-    return Error();
+    Tree.Exp size = BINOP(Tree.BINOP.MUL, index.unEx(),  CONST(frame.wordSize()));
+    Temp t = new Temp();
+    Tree.Stm aStm = MOVE(TEMP(t), array.unEx());
+    Tree.Exp aExp = MEM(BINOP(Tree.BINOP.PLUS, TEMP(t), size));
+    return new Ex(ESEQ(aStm, aExp));
   }
 
   public Exp NilExp() {
-    return Error();
+    return new Ex(CONST(0));
   }
 
   public Exp IntExp(int value) {
-    return Error();
+    return new Ex(CONST(value));
   }
 
   private java.util.Hashtable strings = new java.util.Hashtable();
@@ -129,7 +141,13 @@ public class Translate {
     return frame.externalCall(f.toString(), ExpList(args));
   }
   private Tree.Exp CallExp(Level f, ExpList args, Level from) {
-    throw new Error("Translate.CallExp unimplemented");
+    Tree.Exp framepointer = TEMP(from.frame.FP());
+    if (f.parent != from) {
+      for (Level l = from; l != f.parent; l = l.parent) {
+        framepointer = l.frame.formals.head.exp(framepointer);
+      }
+    }
+    return CALL(NAME(f.frame.name), ExpList(framepointer, ExpList(args)));
   }
 
   public Exp FunExp(Symbol f, ExpList args, Level from) {
@@ -146,51 +164,101 @@ public class Translate {
   }
 
   public Exp OpExp(int op, Exp left, Exp right) {
-    return Error();
+    return new Ex(BINOP(op, left.unEx(), right.unEx()));
   }
 
   public Exp StrOpExp(int op, Exp left, Exp right) {
-    return Error();
+    return new RelCx(op, left.unEx(), right.unEx());
   }
 
   public Exp RecordExp(ExpList init) {
-    return Error();
+    int size = 0;
+    for (ExpList e = init; e != null; e = e.tail) {
+      size++;
+    }
+    Temp t = new Temp();
+    return new Ex(
+      ESEQ(SEQ(MOVE(TEMP(t), this.frame.externalCall("allocRecord", 
+      ExpList(CONST(size)))), 
+      startRecord(t, 0, init, this.frame.wordSize())), 
+      TEMP(t)));
+  }
+  
+  private Tree.Stm startRecord(Temp t, int i, ExpList init, int size)
+  {
+    if (init == null) {
+      return null;
+    }
+    return SEQ(MOVE(MEM(BINOP(0, TEMP(t), CONST(i))), init.head.unEx()), startRecord(t, i + size, init.tail, size));
   }
 
   public Exp SeqExp(ExpList e) {
-    return Error();
+    if (e == null) {
+      return new Nx(null);
+    }
+    Tree.Stm stm = null;
+    for (; e.tail != null; e = e.tail) {
+      stm = SEQ(stm, e.head.unNx());
+    }
+    Tree.Exp exp = e.head.unEx();
+    if (exp == null) {
+      return new Nx(SEQ(stm, e.head.unNx()));
+    }
+    return new Ex(ESEQ(stm, exp));
   }
 
   public Exp AssignExp(Exp lhs, Exp rhs) {
-    return Error();
+    return new Nx(MOVE(lhs.unEx(), rhs.unEx()));
   }
 
   public Exp IfExp(Exp cc, Exp aa, Exp bb) {
-    return Error();
+    return new IfThenElseExp(cc, aa, bb);
   }
 
   public Exp WhileExp(Exp test, Exp body, Label done) {
-    return Error();
+    Label t1 = new Label();
+    Label t2 = new Label();
+    Tree.Stm Stm1 = SEQ(LABEL(t1), test.unCx(t2, done));
+    Tree.Stm Stm2 = SEQ(LABEL(t2), body.unNx());
+    Tree.Stm l = SEQ(Stm1, SEQ(Stm2, JUMP(t1)));
+    return new Nx(SEQ(l, LABEL(done)));
   }
 
   public Exp ForExp(Access i, Exp lo, Exp hi, Exp body, Label done) {
-    return Error();
+    Label t = new Label();
+    Label inc = new Label();
+    Temp c = new Temp();
+    Temp home = i.home.frame.FP();
+    return new Nx(SEQ(SEQ(SEQ(SEQ(MOVE(i.acc.exp(TEMP(home)), lo.unEx()), 
+           MOVE(TEMP(c), hi.unEx())), CJUMP(4, i.acc.exp(TEMP(home)), 
+           TEMP(c), t, done)), SEQ(SEQ(SEQ(LABEL(t), body.unNx()), 
+           CJUMP(2, i.acc.exp(TEMP(home)), TEMP(c), inc, done)), 
+           SEQ(SEQ(LABEL(inc), MOVE(i.acc.exp(TEMP(home)), 
+           BINOP(0, i.acc.exp(TEMP(home)), CONST(1)))), JUMP(t)))), LABEL(done)));
   }
 
   public Exp BreakExp(Label done) {
-    return Error();
+    return new Nx(JUMP(done));
   }
 
   public Exp LetExp(ExpList lets, Exp body) {
-    return Error();
+    Tree.Stm stm = null;
+    for (ExpList el = lets; el != null; el = el.tail) {
+      stm = SEQ(stm, el.head.unNx());
+    }
+    Tree.Exp exp = body.unEx();
+    if (exp == null) {
+      return new Nx(SEQ(stm, body.unNx()));
+    }
+    return new Ex(ESEQ(stm, result));
   }
 
   public Exp ArrayExp(Exp size, Exp init) {
-    return Error();
+    return new Ex(this.frame.externalCall("initArray", ExpList(size.unEx(), ExpList(init.unEx()))));
   }
 
   public Exp VarDec(Access a, Exp init) {
-    return Error();
+    return new Nx(MOVE(a.acc.exp(TEMP(a.home.frame.FP())), init.unEx()));
   }
 
   public Exp TypeDec() {
