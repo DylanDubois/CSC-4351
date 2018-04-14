@@ -104,7 +104,7 @@ public class Translate {
     Temp t = new Temp();
     Tree.Stm aStm = MOVE(TEMP(t), record.unEx());
     Tree.Exp aExp = MEM(BINOP(Tree.BINOP.PLUS, TEMP(t), CONST(index)));
-    return new Ex(ESEQ(aStm, aExp))
+    return new Ex(ESEQ(aStm, aExp));
   }
 
   public Exp SubscriptVar(Exp array, Exp index) {
