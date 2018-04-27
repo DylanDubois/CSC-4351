@@ -80,7 +80,7 @@ public class Codegen {
 
 //Tree.JUMP	
   void munchStm(Tree.JUMP s) {
-		LabelList list = s.list
+		LabelList list = s.list;
 		if (e instanceof NAME) {
 			emit(new assem.OPER("j " + list.head.toString(), null, null, list));
 		}
